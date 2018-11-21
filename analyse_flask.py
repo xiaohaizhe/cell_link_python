@@ -24,27 +24,8 @@ def show_type():
     #print(t)
     return json.dumps(t)
 
-@app.route('/correlation_analyse1', methods=['GET'])
-def correlation_analyze1():
-    t={}
-    t['code']=0
-    t['msg']='success'
-    t['result1']=[1,2,3,4]
-    t['result2']=[2,2,3,4]
-    t['result3']=[3,2,3,4]
-    return json.dumps(t)
-
-@app.route('/linear_regression1', methods=['GET'])
-def linear_regression1():
-    t={}
-    t['code']=0
-    t['msg']='success'
-    t['result']=[1,2,3,4,5,6]
-    return json.dumps(t)
-
-
 '''
-相关性分析
+相关性分析接口
 计算指标间的相关性系数
 当前支持最大3个指标
 '''
@@ -55,8 +36,7 @@ def correlation_analyze():
     response = {}
 
     #解析数据  
-    #req_data = json.loads(request.get_data(as_text=True))
-    req_data = json.load(open("covv.txt"))
+    req_data = json.loads(request.get_data(as_text=True))
     try:
         param=req_data['params']
     except:
@@ -79,41 +59,32 @@ def correlation_analyze():
     result = np.corrcoef(param)
 
     #返回
-    ''' zhangyuntest
-    t={}
-    t['code']=0
-    t['msg']='success'
-    t['result1']=[1,2,3,4]
-    t['result2']=[2,2,3,4]
-    t['result3']=[3,2,3,4]
-    return jsonify(t)
-    '''
     response['code'] = 0
-    response['msg'] = 'success'
+    response['msg'] = 'correlation analyse success！'
     response['result'] = result.tolist()
     return json.dumps(response)
 
 #线性回归
 def liner_Regression(data_x,data_y,learningRate=ANALYSE_ALPHA,Loopnum=ANALYSE_ITER):
-    Weight = np.ones(shape=(1,data_x.shape[1]))
+    weight = np.ones(shape=(1,data_x.shape[1]))
     baise = np.array([[1]])
  
     for num in range(Loopnum):
-        WXPlusB = np.dot(data_x, Weight.T) + baise 
+        WXPlusB = np.dot(data_x, weight.T) + baise 
  
         loss = np.dot((data_y-WXPlusB).T,data_y-WXPlusB)/data_y.shape[0]
         w_gradient = -(2/data_x.shape[0])*np.dot((data_y-WXPlusB).T,data_x)
         baise_gradient = -2*np.dot((data_y-WXPlusB).T,np.ones(shape=[data_x.shape[0],1]))/data_x.shape[0]
  
-        Weight = Weight-learningRate*w_gradient
+        weight = weight-learningRate*w_gradient
         baise = baise-learningRate*baise_gradient
         
         #if num%50==0:
         #    print(loss)       #每迭代50次输出一次loss
-    return (Weight,baise)
+    return (weight,baise)
 
 '''
-线性回归分析
+线性回归分析接口
 '''
 @app.route('/linear_regression', methods=['GET'])
 def linear_regression():
@@ -123,8 +94,7 @@ def linear_regression():
     response = {}
 
     #解析数据   
-    #req_data = json.loads(request.get_data(as_text=True))
-    req_data = json.load(open("line.txt"))
+    req_data = json.loads(request.get_data(as_text=True))
     try:
         param_in = req_data['input']
         param_out.append(req_data['output'])
@@ -149,16 +119,9 @@ def linear_regression():
         result = result_b.tolist() + result_w.tolist()
 
     #返回
-    ''' zhangyuntest
-    t={}
-    t['code']=0
-    t['msg']='success'
-    t['result']=[1,2,3,4,5,6]
-    return jsonify(t)
-    '''
     response={}
     response['code'] = 0
-    response['msg'] = 'success'
+    response['msg'] = 'linear regression analyse success'
     response['result'] = result
     return json.dumps(response)
 
