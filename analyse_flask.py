@@ -15,6 +15,9 @@ app = Flask(__name__)
 ANALYSE_TYPE = ["correlation_analyze", "linear_regression"]         # 支持的分析方式
 ANALYSE_ITER = 5000                                                 # 迭代次数
 ANALYSE_ALPHA = 0.0001                                              # 学习率
+FLASK_APP_HOST = '127.0.0.1'                                        # FLASK APP服务启动地址
+FLASK_APP_PORT = 5000                                               # FLASK APP服务启动端口
+FLASK_APP_DEBUG = False                                             # FLASK APP服务调试模式
 
 
 @app.route('/type')
@@ -24,6 +27,11 @@ def show_type():
     # print(t)
     return json.dumps(t)
 
+
+# 测试首页
+@app.route('/')
+def hello():
+    return "HELLO!"
 
 '''
 相关性分析接口
@@ -131,4 +139,4 @@ def linear_regression():
 
 # 启动服务
 if __name__ == '__main__':
-    app.run()
+    app.run(host=FLASK_APP_HOST, port=FLASK_APP_PORT, debug=FLASK_APP_DEBUG)
