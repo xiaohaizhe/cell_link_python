@@ -12,7 +12,7 @@ import numpy as np
 
 # 全局
 app = Flask(__name__)
-ANALYSE_TYPE = ["correlation_analyze", "linear_regression"]         # 支持的分析方式
+ANALYSE_TYPE = ["correlation_analyse", "linear_regression"]         # 支持的分析方式
 ANALYSE_ITER = 5000                                                 # 迭代次数
 ANALYSE_ALPHA = 0.0001                                              # 学习率
 FLASK_APP_HOST = '127.0.0.1'                                        # FLASK APP服务启动地址
@@ -28,7 +28,7 @@ def show_type():
     return json.dumps(t)
 
 
-# 测试首页
+# 测试
 @app.route('/')
 def hello():
     return "HELLO!"
@@ -38,15 +38,15 @@ def hello():
 计算指标间的相关性系数
 当前支持最大3个指标
 '''
-@app.route('/correlation_analyse', methods=['GET'])
+@app.route('/correlation_analyse', methods=['POST'])
 def correlation_analyze():
     req_data = {}
     param = []
     response = {}
 
     # 解析数据
-    req_data = json.loads(request.get_data(as_text=True))
     try:
+        req_data = json.loads(request.get_data(as_text=True))
         param = req_data['params']
     except:
         # 无参数
@@ -97,7 +97,7 @@ def liner_Regression(data_x, data_y, learningRate=ANALYSE_ALPHA, Loopnum=ANALYSE
 '''
 线性回归分析接口
 '''
-@app.route('/linear_regression', methods=['GET'])
+@app.route('/linear_regression', methods=['POST'])
 def linear_regression():
     req_data = {}
     param_out = []
@@ -105,8 +105,8 @@ def linear_regression():
     response = {}
 
     # 解析数据
-    req_data = json.loads(request.get_data(as_text=True))
     try:
+        req_data = json.loads(request.get_data(as_text=True))
         param_in = req_data['input']
         param_out.append(req_data['output'])
 
